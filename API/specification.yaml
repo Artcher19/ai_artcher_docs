@@ -1,0 +1,79 @@
+openapi: '3.0.3'
+info:
+  title: API 
+  version: '1.0'
+tags:
+  - name: ragAgents
+    description: RAG-агенты
+  - name: docs
+    description: Документы
+  - name: llm
+    description: Языковые модели
+servers:
+  - url: https://ai.artcheroff.ru/api/v1/
+paths:
+  /docs:
+    post:
+      tags:
+        - docs
+      summary: Загрузить документ
+      description: Метод возвращает статус получения документа
+      content:
+        application/json:
+          schema:
+            docUpload:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 
+
+
+
+  /ragModels:
+    get:
+      tags: 
+        - ragAgents
+      summary: Получить RAG-агента
+      description: Метод возвращает список RAG-моделей пользователя
+      parameters:
+        - name: dateBegin
+          in: query
+          description: Дата создания RAG-агента
+          required: False
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Статус RAG-агента
+          required: False
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: '#/components/schemas/ragAgent'
+components:
+  schemas:
+    ragAgent:
+      description: Объект RAG-агента
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Идентификатор RAG-агента
+          example: 550e8400-e29b-41d4-a716-446655440000
+        desc:
+          type: string
+          description: Описание RAG-агента
+          default: null
+          example: Агент для ответа 
+    doc:
+      type: object
+      properties:
+
+
+        
