@@ -18,15 +18,42 @@ paths:
         - docs
       summary: Загрузить документ
       description: Метод возвращает статус получения документа
-      content:
-        application/json:
-          schema:
-            docUpload:
-              type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
               properties:
                 name:
-                  type: string
-                  description: 
+                    type: string
+                    example: "Документ.pdf"
+                content:
+                    type: string
+                    example: "b'JVBERi0xLjQKJSA0IDAgb2JqCjw8L0ZpbHRlci9GbFlQ...'"
+                dateUpload:
+                    type: string
+                    format: date-time
+    get:
+      tags:
+        - docs
+      summary: Получить набор документов
+      description: Метод возвращается список документов пользователя
+      parameters:
+        - name: dateUpload
+          in: query
+          description: Дата загрузки документа
+          schema:
+            type: string
+            format: date-time
+        - name: status
+          in: query
+          description: Статус документа
+          schema:
+            type: string
+            enum: [created, saved, embedded]
+      responses:
+        '200':
+          description: Успешно
+
 
 
 
@@ -40,13 +67,15 @@ paths:
         - name: dateBegin
           in: query
           description: Дата создания RAG-агента
-          required: False
           schema:
             type: string
+            format: date-time
         - name: status
           in: query
           description: Статус RAG-агента
-          required: False
+          schema:
+            type: string
+            enum: [active, deleted]
       responses:
         '200':
           description: Успешно
@@ -73,7 +102,17 @@ components:
           example: Агент для ответа 
     doc:
       type: object
+      description: Объект документа
       properties:
+        id:
+          type: string
+          format: uuid
+          description: Идентификатор документа
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          description: Название документа
+          
 
 
         
