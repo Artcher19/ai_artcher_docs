@@ -1,7 +1,7 @@
 openapi: '3.0.3'
 info:
   title: API 
-  version: '1.0'
+  version: '1.0.1'
 tags:
   - name: ragAgents
     description: RAG-агенты
@@ -10,28 +10,9 @@ tags:
   - name: llm
     description: Языковые модели
 servers:
-  - url: https://ai.artcheroff.ru/api/v1/
+  - url: http://ai.artcheroff.ru/api/v1/
 paths:
   /docs:
-    post:
-      tags:
-        - docs
-      summary: Загрузить документ
-      description: Метод возвращает статус получения документа
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                name:
-                    type: string
-                    example: "Документ.pdf"
-                content:
-                    type: string
-                    example: "b'JVBERi0xLjQKJSA0IDAgb2JqCjw8L0ZpbHRlci9GbFlQ...'"
-                dateUpload:
-                    type: string
-                    format: date-time
     get:
       tags:
         - docs
@@ -53,10 +34,63 @@ paths:
       responses:
         '200':
           description: Успешно
-
-
-
-
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: '#/components/schemas/doc'
+        '401':
+          description: Недостаточно прав
+    post:
+      tags:
+        - docs
+      summary: Загрузить документ
+      description: Метод возвращает статус получения документа
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                    type: string
+                    example: "Документ.pdf"
+                content:
+                    type: string
+                    example: "JVBERi0xLjQKJSA0IDAgb2JqCjw8L0ZpbHRlci9GbFlQ..."
+                dateUpload:
+                    type: string
+                    format: date-time
+      responses:
+        '200':
+          description: Успешно
+    put:
+      tags:
+        - docs
+      summary: Заменить документ
+      description: Метод возвращает статус замены документа
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 550e8400-e29b-41d4-a716-446655440000                    
+                  name:
+                      type: string
+                      example: "Документ.pdf"
+                  content:
+                      type: string
+                      format: binary
+                      example: "JVBERi0xLjQKJSA0IDAgb2JqCjw8L0ZpbHRlci9GbFlQ..."
+                  dateUpload:
+                      type: string
+                      format: date-time           
+      responses:
+        '200':
+          description: Успешно
   /ragModels:
     get:
       tags: 
@@ -99,7 +133,7 @@ components:
           type: string
           description: Описание RAG-агента
           default: null
-          example: Агент для ответа 
+          example: Эксперт по фитнесу
     doc:
       type: object
       description: Объект документа
@@ -112,7 +146,22 @@ components:
         name:
           type: string
           description: Название документа
-          
-
-
-        
+          example: 'Документ.pdf'
+        content:
+          type: string
+          description: Содержимое документа
+          example: JVBERi0xLjQKJSA0IDAgb2JqCjw8L0ZpbHRlci9GbFlQ...
+        dateUpload:
+          type: string
+          format: date-time
+          example: 2025-01-01T19:10:00
+          description: Дата загрузки документа
+        size:
+          type: string
+          description: Объем документа в Мб
+          example: 100 MB
+        status:
+          type: string
+          enum: [uploaded, saved, embedded]
+          description: Статус обработки документа
+    
